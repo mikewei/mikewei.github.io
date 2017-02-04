@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="shmc::SyncIter" name="SyncIter" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> Iterator for reading SyncBuf</brief>
+  <field id="shmc::SyncIter::pos" name="pos">
+    <type name="uint64_t" />
+  </field>
+</struct>

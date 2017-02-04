@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='utf-8'?>
+<classtemplate id="shmc::impl::Utils" name="Utils" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <templatetypeparameter id="shmc::impl::Utils::Dummy" name="Dummy" />
+  <method id="shmc::impl::Utils::Log" name="Log" static="yes">
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="shmc::impl::Utils::Log::lv" name="lv">
+      <type name="LogLevel" ref="shmc#shmc::LogLevel" />
+    </argument>
+    <argument id="shmc::impl::Utils::Log::fmt" name="fmt">
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </method>
+  <method id="shmc::impl::Utils::SetLogHandler" name="SetLogHandler" static="yes">
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="shmc::impl::Utils::SetLogHandler::lv" name="lv">
+      <type name="LogLevel" ref="shmc#shmc::LogLevel" />
+    </argument>
+    <argument id="shmc::impl::Utils::SetLogHandler::f" name="f">
+      <type name="std::function&lt;void (shmc::LogLevel, const char *)&gt;" />
+    </argument>
+  </method>
+  <method id="shmc::impl::Utils::SetDefaultCreateFlags" name="SetDefaultCreateFlags" static="yes">
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="shmc::impl::Utils::SetDefaultCreateFlags::flgs" name="flgs">
+      <type builtin="yes" name="int" />
+    </argument>
+  </method>
+  <method id="shmc::impl::Utils::DefaultCreateFlags" name="DefaultCreateFlags" static="yes">
+    <return>
+      <type builtin="yes" name="int" />
+    </return>
+  </method>
+  <method id="shmc::impl::Utils::Perror" name="Perror" static="yes">
+    <return>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </return>
+  </method>
+  <method id="shmc::impl::Utils::GetPrimeArray" name="GetPrimeArray" static="yes">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::impl::Utils::GetPrimeArray::top" name="top">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::impl::Utils::GetPrimeArray::num" name="num">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::impl::Utils::GetPrimeArray::array" name="array">
+      <type name="size_t []" />
+    </argument>
+  </method>
+  <method id="shmc::impl::Utils::GenMagic" name="GenMagic" static="yes">
+    <return>
+      <type name="uint64_t" />
+    </return>
+    <argument id="shmc::impl::Utils::GenMagic::str" name="str">
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </method>
+  <method id="shmc::impl::Utils::Hex" name="Hex" static="yes">
+    <return>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </return>
+    <argument id="shmc::impl::Utils::Hex::buf" name="buf">
+      <type builtin="yes" name="void" qualifier=" const *" />
+    </argument>
+    <argument id="shmc::impl::Utils::Hex::len" name="len">
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::impl::Utils::GetPageSize" name="GetPageSize" static="yes">
+    <return>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method id="shmc::impl::Utils::MajorVer" name="MajorVer" static="yes">
+    <return>
+      <type name="size_t" />
+    </return>
+    <argument id="shmc::impl::Utils::MajorVer::ver" name="ver">
+      <type name="uint32_t" />
+    </argument>
+  </method>
+  <method id="shmc::impl::Utils::MinorVer" name="MinorVer" static="yes">
+    <return>
+      <type name="size_t" />
+    </return>
+    <argument id="shmc::impl::Utils::MinorVer::ver" name="ver">
+      <type name="uint32_t" />
+    </argument>
+  </method>
+  <method id="shmc::impl::Utils::MakeVer" name="MakeVer" static="yes">
+    <return>
+      <type name="uint32_t" />
+    </return>
+    <argument id="shmc::impl::Utils::MakeVer::major" name="major">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::impl::Utils::MakeVer::minor" name="minor">
+      <type name="size_t" />
+    </argument>
+  </method>
+  <methodtemplate id="shmc::impl::Utils::Padding" name="Padding" static="yes">
+    <return>
+      <type name="size_t" />
+    </return>
+    <templatetypeparameter id="shmc::impl::Utils::Padding::T" name="T" />
+    <templatenontypeparameter id="shmc::impl::Utils::Padding::N" name="N">
+      <type name="size_t" />
+    </templatenontypeparameter>
+  </methodtemplate>
+  <methodtemplate id="shmc::impl::Utils::RoundAlign" name="RoundAlign" static="yes">
+    <return>
+      <type name="T" />
+    </return>
+    <argument id="shmc::impl::Utils::RoundAlign::num" name="num">
+      <type name="T" />
+    </argument>
+    <templatenontypeparameter id="shmc::impl::Utils::RoundAlign::N" name="N">
+      <type name="size_t" />
+    </templatenontypeparameter>
+    <templatetypeparameter id="shmc::impl::Utils::RoundAlign::T" name="T" />
+  </methodtemplate>
+  <methodtemplate id="shmc::impl::Utils::RoundAlign" name="RoundAlign" static="yes">
+    <return>
+      <type name="T" />
+    </return>
+    <argument id="shmc::impl::Utils::RoundAlign::num" name="num">
+      <type name="T" />
+    </argument>
+    <argument id="shmc::impl::Utils::RoundAlign::N" name="N">
+      <type name="size_t" />
+    </argument>
+    <templatetypeparameter id="shmc::impl::Utils::RoundAlign::T" name="T" />
+  </methodtemplate>
+</classtemplate>

@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="shmc::ShmHashMap::HealthStat" name="HealthStat" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>Health infomation about the container</brief>
+  <field id="shmc::ShmHashMap::HealthStat::lt_stat" name="lt_stat">
+    <type name="typename ShmLinkTable&lt;Alloc&gt;::HealthStat" />
+  </field>
+  <field id="shmc::ShmHashMap::HealthStat::total_key_values" name="total_key_values">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmHashMap::HealthStat::bad_key_values" name="bad_key_values">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmHashMap::HealthStat::cleared_key_values" name="cleared_key_values">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmHashMap::HealthStat::leaked_values" name="leaked_values">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmHashMap::HealthStat::recycled_leaked_values" name="recycled_leaked_values">
+    <type name="size_t" />
+  </field>
+</struct>

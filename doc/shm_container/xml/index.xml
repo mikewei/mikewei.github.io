@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='utf-8'?>
+<index xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>SHM-Container Documentation</brief>
+  <doc># SHM-Container Documentation
+
+Shared-memory is best known as an effective IPC method, moreover, it is a powerful design pattern in server architecture with some notable features:
+
+* process restart without memory data lost
+* achieve modularity with decoupled processes
+* keep service HA even with failure in one process
+* almost no performance cost for inter process communication
+
+Many popular high-volume internet services (such as QQ server) have benefit from usage of shared-memory techniques. However it is not as easy as using in-process libraries (such as STL) when working with OS shm interface, because you have to manage memory pages directly. So what this project is valuable is that it offers a collection of shared-memory containers with familiar interface for you, and also with the following features:
+
+* provide a unified interface for different underlying shm mechanism (SYSV, SYSV with HugeTLB, POSIX, even HEAP)
+* provide useful container such as hash-map, broadcast-queue(sync-buf)
+* efficient lock-free implemenation aimed to offer extreme high performance
+* designed for robust and fast, sufficient unit-tests, production ready and verified
+
+See document of classes in namespace *shmc* for detail.</doc>
+  <namespace name="shmc" ref="shmc#shmc">
+    <brief>namespace of library</brief>
+    <namespace name="impl" ref="shmc::impl#shmc::impl">
+      <brief>internal use</brief>
+      <structtemplate name="AllocTraits" ref="shmc::impl::AllocTraits#shmc::impl::AllocTraits">
+        <brief>this defines default traits, subclasses can override it by partial-spec</brief>
+        <templatetypeparameter id="shmc::impl::AllocTraits::Alloc" name="Alloc" />
+      </structtemplate>
+      <classtemplate name="MmapAlloc" ref="shmc::impl::MmapAlloc#shmc::impl::MmapAlloc">
+        <templatenontypeparameter id="shmc::impl::MmapAlloc::IsShared" name="IsShared">
+          <type builtin="yes" name="bool" />
+        </templatenontypeparameter>
+      </classtemplate>
+      <class name="POSIXShmAlloc" ref="shmc::impl::POSIXShmAlloc#shmc::impl::POSIXShmAlloc" />
+      <class name="ShmAlloc" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc" />
+      <classtemplate name="SVIPCShmAlloc" ref="shmc::impl::SVIPCShmAlloc#shmc::impl::SVIPCShmAlloc">
+        <templatenontypeparameter id="shmc::impl::SVIPCShmAlloc::kEnableHugeTLB" name="kEnableHugeTLB">
+          <type builtin="yes" name="bool" />
+        </templatenontypeparameter>
+      </classtemplate>
+      <classtemplate name="Utils" ref="shmc::impl::Utils#shmc::impl::Utils">
+        <templatetypeparameter id="shmc::impl::Utils::Dummy" name="Dummy" />
+      </classtemplate>
+    </namespace>
+    <struct name="link_buf_t" ref="shmc::link_buf_t#shmc::link_buf_t">
+      <brief> Handle type of link-buffer</brief>
+    </struct>
+    <classtemplate name="ShmArray" ref="shmc::ShmArray#shmc::ShmArray">
+      <brief> A fixed-size array container</brief>
+      <templatetypeparameter id="shmc::ShmArray::Node" name="Node">
+        <brief>type of array node, must be StandardLayoutType</brief>
+      </templatetypeparameter>
+      <templatetypeparameter id="shmc::ShmArray::Alloc" name="Alloc">
+        <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+        <default>
+          <type name="shmc::SVIPC" />
+        </default>
+      </templatetypeparameter>
+    </classtemplate>
+    <classtemplate name="ShmHandle" ref="shmc::ShmHandle#shmc::ShmHandle">
+      <brief> A shm reference holder</brief>
+      <templatetypeparameter id="shmc::ShmHandle::T" name="T">
+        <brief>type of the header of shm, must StandardLayoutType</brief>
+      </templatetypeparameter>
+      <templatetypeparameter id="shmc::ShmHandle::Alloc" name="Alloc">
+        <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX]</brief>
+      </templatetypeparameter>
+    </classtemplate>
+    <classtemplate name="ShmHashMap" ref="shmc::ShmHashMap#shmc::ShmHashMap">
+      <brief> A hash-map container of key-values</brief>
+      <templatetypeparameter id="shmc::ShmHashMap::KeyType" name="KeyType">
+        <brief>type of key, need StandardLayoutType supporting =,==,std::hash</brief>
+      </templatetypeparameter>
+      <templatetypeparameter id="shmc::ShmHashMap::Alloc" name="Alloc">
+        <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+        <default>
+          <type name="shmc::SVIPC" />
+        </default>
+      </templatetypeparameter>
+      <struct name="TravelPos" ref="shmc::ShmHashMap::TravelPos#shmc::ShmHashMap::TravelPos">
+        <brief> Cursor type recording current travelling position</brief>
+      </struct>
+      <struct name="HealthStat" ref="shmc::ShmHashMap::HealthStat#shmc::ShmHashMap::HealthStat">
+        <brief>Health infomation about the container</brief>
+      </struct>
+    </classtemplate>
+    <classtemplate name="ShmHashTable" ref="shmc::ShmHashTable#shmc::ShmHashTable">
+      <brief> A shm implementation of hash table (faster version, default choice)</brief>
+      <templatetypeparameter id="shmc::ShmHashTable::Key" name="Key">
+        <brief>type of search key, any type supporting =,==,std::hash</brief>
+      </templatetypeparameter>
+      <templatetypeparameter id="shmc::ShmHashTable::Node" name="Node">
+        <brief>type of node which contains both key and value information</brief>
+      </templatetypeparameter>
+      <templatetypeparameter id="shmc::ShmHashTable::Alloc" name="Alloc">
+        <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+        <default>
+          <type name="shmc::SVIPC" />
+        </default>
+      </templatetypeparameter>
+      <struct name="TravelPos" ref="shmc::ShmHashTable::TravelPos#shmc::ShmHashTable::TravelPos">
+        <brief> Cursor type recording current travelling position</brief>
+      </struct>
+    </classtemplate>
+    <classtemplate name="ShmHashTableM" ref="shmc::ShmHashTableM#shmc::ShmHashTableM">
+      <brief> A shm implementation of hash table (classic version, memory effecient)</brief>
+      <templatetypeparameter id="shmc::ShmHashTableM::Key" name="Key">
+        <brief>type of search key, any type supporting =,==,std::hash</brief>
+      </templatetypeparameter>
+      <templatetypeparameter id="shmc::ShmHashTableM::Node" name="Node">
+        <brief>type of node which contains both key and value infomation</brief>
+      </templatetypeparameter>
+      <templatetypeparameter id="shmc::ShmHashTableM::Alloc" name="Alloc">
+        <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+        <default>
+          <type name="shmc::SVIPC" />
+        </default>
+      </templatetypeparameter>
+      <struct name="TravelPos" ref="shmc::ShmHashTableM::TravelPos#shmc::ShmHashTableM::TravelPos">
+        <brief> Cursor type recording current travelling position</brief>
+      </struct>
+    </classtemplate>
+    <classtemplate name="ShmLinkTable" ref="shmc::ShmLinkTable#shmc::ShmLinkTable">
+      <brief> A container of variable length buffers</brief>
+      <templatetypeparameter id="shmc::ShmLinkTable::Alloc" name="Alloc">
+        <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+        <default>
+          <type name="shmc::SVIPC" />
+        </default>
+      </templatetypeparameter>
+      <struct name="HealthStat" ref="shmc::ShmLinkTable::HealthStat#shmc::ShmLinkTable::HealthStat">
+        <brief>Health infomation about the container</brief>
+      </struct>
+    </classtemplate>
+    <classtemplate name="ShmQueue" ref="shmc::ShmQueue#shmc::ShmQueue">
+      <brief> A one-writer-one-reader FIFO queue</brief>
+      <templatetypeparameter id="shmc::ShmQueue::Alloc" name="Alloc">
+        <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+        <default>
+          <type name="shmc::SVIPC" />
+        </default>
+      </templatetypeparameter>
+    </classtemplate>
+    <classtemplate name="ShmSyncBuf" ref="shmc::ShmSyncBuf#shmc::ShmSyncBuf">
+      <brief> A one-writer-multi-reader broadcast queue useful for replica data sync</brief>
+      <templatetypeparameter id="shmc::ShmSyncBuf::Alloc" name="Alloc">
+        <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+        <default>
+          <type name="shmc::SVIPC" />
+        </default>
+      </templatetypeparameter>
+    </classtemplate>
+    <struct name="SyncIter" ref="shmc::SyncIter#shmc::SyncIter">
+      <brief> Iterator for reading SyncBuf</brief>
+    </struct>
+    <struct name="SyncMeta" ref="shmc::SyncMeta#shmc::SyncMeta">
+      <brief> Meta data of sync node</brief>
+    </struct>
+    <struct name="ZeroCopyBuf" ref="shmc::ZeroCopyBuf#shmc::ZeroCopyBuf">
+      <brief> Descriptor of internal buffer of ShmQueue for zero-copy</brief>
+    </struct>
+  </namespace>
+  <templatetypeparameter id="Key" name="Key" />
+  <templatetypeparameter id="Node" name="Node" />
+  <templatetypeparameter id="Alloc" name="Alloc" />
+  <templatetypeparameter id="Key" name="Key" />
+  <templatetypeparameter id="Node" name="Node" />
+  <templatetypeparameter id="Alloc" name="Alloc" />
+  <templatetypeparameter id="Key" name="Key" />
+  <templatetypeparameter id="Node" name="Node" />
+  <templatetypeparameter id="Alloc" name="Alloc" />
+</index>

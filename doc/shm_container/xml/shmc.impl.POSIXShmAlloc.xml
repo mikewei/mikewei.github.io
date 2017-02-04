@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<class id="shmc::impl::POSIXShmAlloc" name="POSIXShmAlloc" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <base access="public">
+    <type name="ShmAlloc" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc" />
+  </base>
+  <destructor id="shmc::impl::POSIXShmAlloc::~POSIXShmAlloc" name="~POSIXShmAlloc" virtual="yes" />
+  <method id="shmc::impl::POSIXShmAlloc::AlignSize" name="AlignSize" override="yes" virtual="yes">
+    <return>
+      <type name="size_t" />
+    </return>
+    <override name="ShmAlloc::AlignSize" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc::AlignSize" />
+  </method>
+  <method id="shmc::impl::POSIXShmAlloc::Attach" name="Attach" override="yes" virtual="yes">
+    <return>
+      <type builtin="yes" name="void" qualifier="*" />
+    </return>
+    <argument id="shmc::impl::POSIXShmAlloc::Attach::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::impl::POSIXShmAlloc::Attach::size" name="size">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::impl::POSIXShmAlloc::Attach::flags" name="flags">
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="shmc::impl::POSIXShmAlloc::Attach::mapped_size" name="mapped_size">
+      <type name="size_t" qualifier="*" />
+    </argument>
+    <override name="ShmAlloc::Attach" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc::Attach" />
+  </method>
+  <method id="shmc::impl::POSIXShmAlloc::Detach" name="Detach" override="yes" virtual="yes">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::impl::POSIXShmAlloc::Detach::addr" name="addr">
+      <type builtin="yes" name="void" qualifier="*" />
+    </argument>
+    <argument id="shmc::impl::POSIXShmAlloc::Detach::size" name="size">
+      <type name="size_t" />
+    </argument>
+    <override name="ShmAlloc::Detach" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc::Detach" />
+  </method>
+  <method id="shmc::impl::POSIXShmAlloc::Unlink" name="Unlink" override="yes" virtual="yes">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::impl::POSIXShmAlloc::Unlink::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <override name="ShmAlloc::Unlink" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc::Unlink" />
+  </method>
+</class>

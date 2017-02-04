@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='utf-8'?>
+<classtemplate abstract="true" id="shmc::ShmArray" name="ShmArray" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> A fixed-size array container</brief>
+  <doc>This container uses a pre-allocated array of fixed-size nodes in shm.
+
+Read-Write concurrency safety should be considered by the user, such as
+race condition of reading one node and writing of the same node.
+</doc>
+  <templatetypeparameter id="shmc::ShmArray::Node" name="Node">
+    <brief>type of array node, must be StandardLayoutType</brief>
+  </templatetypeparameter>
+  <templatetypeparameter id="shmc::ShmArray::Alloc" name="Alloc">
+    <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+    <default>
+      <type name="shmc::SVIPC" />
+    </default>
+  </templatetypeparameter>
+  <constructor abstract="yes" id="shmc::ShmArray::ShmArray&lt;Node, Alloc&gt;" name="ShmArray&lt;Node, Alloc&gt;" />
+  <method id="shmc::ShmArray::InitForWrite" name="InitForWrite">
+    <brief> Initializer for READ &amp; WRITE</brief>
+    <doc>This initializer should be called by the container writer/owner and
+it will try to attach an existing shm or created a new one if needed.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmArray::InitForWrite::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach or create</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmArray::InitForWrite::size" name="size">
+      <doc>size of the shm to attach or create</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmArray::InitForRead" name="InitForRead">
+    <brief> Initializer for READ-ONLY</brief>
+    <doc>This initializer should be called by the container reader and
+it will try to attach an existing shm with read-only mode.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmArray::InitForRead::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmArray::operator[]" name="operator[]">
+    <brief> Get const node reference by index</brief>
+    <return>
+      <doc>const node reference</doc>
+      <type name="const volatile Node" qualifier=" const &amp;" />
+    </return>
+    <argument id="shmc::ShmArray::operator[]::index" name="index">
+      <doc>index of array</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+  </method>
+  <method id="shmc::ShmArray::operator[]" name="operator[]">
+    <brief> Get node reference by index</brief>
+    <return>
+      <doc>node reference</doc>
+      <type name="volatile Node" qualifier=" &amp;" />
+    </return>
+    <argument id="shmc::ShmArray::operator[]::index" name="index">
+      <doc>index of array</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+  </method>
+  <method id="shmc::ShmArray::size" name="size">
+    <brief> getter</brief>
+    <return>
+      <doc>total size of array</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+</classtemplate>

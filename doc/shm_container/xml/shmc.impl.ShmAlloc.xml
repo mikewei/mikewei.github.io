@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='utf-8'?>
+<class abstract="true" id="shmc::impl::ShmAlloc" name="ShmAlloc" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <subclass access="public" name="MmapAlloc" ref="shmc::impl::MmapAlloc#shmc::impl::MmapAlloc" />
+  <subclass access="public" name="POSIXShmAlloc" ref="shmc::impl::POSIXShmAlloc#shmc::impl::POSIXShmAlloc" />
+  <subclass access="public" name="SVIPCShmAlloc" ref="shmc::impl::SVIPCShmAlloc#shmc::impl::SVIPCShmAlloc" />
+  <destructor id="shmc::impl::ShmAlloc::~ShmAlloc" name="~ShmAlloc" virtual="yes" />
+  <method abstract="yes" id="shmc::impl::ShmAlloc::AlignSize" name="AlignSize" virtual="yes">
+    <return>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method abstract="yes" id="shmc::impl::ShmAlloc::Attach" name="Attach" virtual="yes">
+    <brief>interfaces to be implemented by sub-class</brief>
+    <return>
+      <type builtin="yes" name="void" qualifier="*" />
+    </return>
+    <argument id="shmc::impl::ShmAlloc::Attach::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach::size" name="size">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach::flags" name="flags">
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach::mapped_size" name="mapped_size">
+      <type name="size_t" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::impl::ShmAlloc::Attach_AutoCreate" name="Attach_AutoCreate">
+    <return>
+      <type builtin="yes" name="void" qualifier="*" />
+    </return>
+    <argument id="shmc::impl::ShmAlloc::Attach_AutoCreate::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_AutoCreate::size" name="size">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_AutoCreate::create_flags" name="create_flags">
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_AutoCreate::mapped_size" name="mapped_size">
+      <type name="size_t" qualifier="*" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_AutoCreate::created" name="created">
+      <type builtin="yes" name="bool" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::impl::ShmAlloc::Attach_ExclCreate" name="Attach_ExclCreate">
+    <return>
+      <type builtin="yes" name="void" qualifier="*" />
+    </return>
+    <argument id="shmc::impl::ShmAlloc::Attach_ExclCreate::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_ExclCreate::size" name="size">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_ExclCreate::mapped_size" name="mapped_size">
+      <type name="size_t" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::impl::ShmAlloc::Attach_ForceCreate" name="Attach_ForceCreate">
+    <return>
+      <type builtin="yes" name="void" qualifier="*" />
+    </return>
+    <argument id="shmc::impl::ShmAlloc::Attach_ForceCreate::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_ForceCreate::size" name="size">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_ForceCreate::mapped_size" name="mapped_size">
+      <type name="size_t" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::impl::ShmAlloc::Attach_MayCreate" name="Attach_MayCreate">
+    <return>
+      <type builtin="yes" name="void" qualifier="*" />
+    </return>
+    <argument id="shmc::impl::ShmAlloc::Attach_MayCreate::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_MayCreate::size" name="size">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_MayCreate::mapped_size" name="mapped_size">
+      <type name="size_t" qualifier="*" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_MayCreate::created" name="created">
+      <type builtin="yes" name="bool" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::impl::ShmAlloc::Attach_ReadOnly" name="Attach_ReadOnly">
+    <return>
+      <type builtin="yes" name="void" qualifier="*" />
+    </return>
+    <argument id="shmc::impl::ShmAlloc::Attach_ReadOnly::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_ReadOnly::size" name="size">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Attach_ReadOnly::mapped_size" name="mapped_size">
+      <type name="size_t" qualifier="*" />
+    </argument>
+  </method>
+  <method abstract="yes" id="shmc::impl::ShmAlloc::Detach" name="Detach" virtual="yes">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::impl::ShmAlloc::Detach::addr" name="addr">
+      <type builtin="yes" name="void" qualifier="*" />
+    </argument>
+    <argument id="shmc::impl::ShmAlloc::Detach::size" name="size">
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::impl::ShmAlloc::last_errno" name="last_errno">
+    <return>
+      <type builtin="yes" name="int" />
+    </return>
+  </method>
+  <method abstract="yes" id="shmc::impl::ShmAlloc::Unlink" name="Unlink" virtual="yes">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::impl::ShmAlloc::Unlink::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method access="protected" id="shmc::impl::ShmAlloc::set_last_errno" name="set_last_errno">
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="shmc::impl::ShmAlloc::set_last_errno::err" name="err">
+      <type name="ShmAllocErrno" ref="shmc::impl#shmc::impl::ShmAllocErrno" />
+    </argument>
+  </method>
+</class>

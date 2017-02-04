@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="shmc::SyncMeta" name="SyncMeta" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> Meta data of sync node</brief>
+  <field id="shmc::SyncMeta::seq" name="seq">
+    <type name="uint64_t" />
+  </field>
+  <field id="shmc::SyncMeta::time" name="time">
+    <type name="timeval" />
+  </field>
+</struct>

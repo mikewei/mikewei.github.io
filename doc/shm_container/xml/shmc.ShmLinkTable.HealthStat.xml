@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="shmc::ShmLinkTable::HealthStat" name="HealthStat" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>Health infomation about the container</brief>
+  <field id="shmc::ShmLinkTable::HealthStat::total_free_nodes" name="total_free_nodes">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmLinkTable::HealthStat::total_link_bufs" name="total_link_bufs">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmLinkTable::HealthStat::total_link_buf_bytes" name="total_link_buf_bytes">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmLinkTable::HealthStat::leaked_nodes" name="leaked_nodes">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmLinkTable::HealthStat::recycled_leaked_nodes" name="recycled_leaked_nodes">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmLinkTable::HealthStat::bad_linked_link_bufs" name="bad_linked_link_bufs">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmLinkTable::HealthStat::too_long_link_bufs" name="too_long_link_bufs">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmLinkTable::HealthStat::too_short_link_bufs" name="too_short_link_bufs">
+    <type name="size_t" />
+  </field>
+  <field id="shmc::ShmLinkTable::HealthStat::cleared_link_bufs" name="cleared_link_bufs">
+    <type name="size_t" />
+  </field>
+</struct>

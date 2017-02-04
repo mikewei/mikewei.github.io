@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<classtemplate id="shmc::impl::SVIPCShmAlloc" name="SVIPCShmAlloc" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <base access="public">
+    <type name="ShmAlloc" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc" />
+  </base>
+  <templatenontypeparameter id="shmc::impl::SVIPCShmAlloc::kEnableHugeTLB" name="kEnableHugeTLB">
+    <type builtin="yes" name="bool" />
+  </templatenontypeparameter>
+  <destructor id="shmc::impl::SVIPCShmAlloc::~SVIPCShmAlloc&lt;kEnableHugeTLB&gt;" name="~SVIPCShmAlloc&lt;kEnableHugeTLB&gt;" virtual="yes" />
+  <method id="shmc::impl::SVIPCShmAlloc::Attach" name="Attach" override="yes" virtual="yes">
+    <return>
+      <type builtin="yes" name="void" qualifier="*" />
+    </return>
+    <argument id="shmc::impl::SVIPCShmAlloc::Attach::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::impl::SVIPCShmAlloc::Attach::size" name="size">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::impl::SVIPCShmAlloc::Attach::flags" name="flags">
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="shmc::impl::SVIPCShmAlloc::Attach::mapped_size" name="mapped_size">
+      <type name="size_t" qualifier="*" />
+    </argument>
+    <override name="ShmAlloc::Attach" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc::Attach" />
+  </method>
+  <method id="shmc::impl::SVIPCShmAlloc::Detach" name="Detach" override="yes" virtual="yes">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::impl::SVIPCShmAlloc::Detach::addr" name="addr">
+      <type builtin="yes" name="void" qualifier="*" />
+    </argument>
+    <argument id="shmc::impl::SVIPCShmAlloc::Detach::size" name="size">
+      <type name="size_t" />
+    </argument>
+    <override name="ShmAlloc::Detach" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc::Detach" />
+  </method>
+  <method id="shmc::impl::SVIPCShmAlloc::Unlink" name="Unlink" override="yes" virtual="yes">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::impl::SVIPCShmAlloc::Unlink::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <override name="ShmAlloc::Unlink" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc::Unlink" />
+  </method>
+  <method id="shmc::impl::SVIPCShmAlloc::AlignSize" name="AlignSize" override="yes" virtual="yes">
+    <return>
+      <type name="size_t" />
+    </return>
+    <override name="ShmAlloc::AlignSize" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc::AlignSize" />
+  </method>
+</classtemplate>

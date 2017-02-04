@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<namespace id="shmc::impl" name="impl" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>internal use</brief>
+  <variable id="shmc::impl::create_flags" name="create_flags">
+    <type builtin="yes" name="int" />
+  </variable>
+  <variable id="shmc::impl::log_func" name="log_func">
+    <type name="std::function&lt;void (shmc::LogLevel, const char *)&gt;" />
+  </variable>
+  <variable id="shmc::impl::log_level" name="log_level">
+    <type builtin="yes" name="int" />
+  </variable>
+  <structtemplate name="AllocTraits" ref="shmc::impl::AllocTraits#shmc::impl::AllocTraits">
+    <brief>this defines default traits, subclasses can override it by partial-spec</brief>
+    <templatetypeparameter id="shmc::impl::AllocTraits::Alloc" name="Alloc" />
+  </structtemplate>
+  <classtemplate name="MmapAlloc" ref="shmc::impl::MmapAlloc#shmc::impl::MmapAlloc">
+    <templatenontypeparameter id="shmc::impl::MmapAlloc::IsShared" name="IsShared">
+      <type builtin="yes" name="bool" />
+    </templatenontypeparameter>
+  </classtemplate>
+  <class name="POSIXShmAlloc" ref="shmc::impl::POSIXShmAlloc#shmc::impl::POSIXShmAlloc" />
+  <class name="ShmAlloc" ref="shmc::impl::ShmAlloc#shmc::impl::ShmAlloc" />
+  <classtemplate name="SVIPCShmAlloc" ref="shmc::impl::SVIPCShmAlloc#shmc::impl::SVIPCShmAlloc">
+    <templatenontypeparameter id="shmc::impl::SVIPCShmAlloc::kEnableHugeTLB" name="kEnableHugeTLB">
+      <type builtin="yes" name="bool" />
+    </templatenontypeparameter>
+  </classtemplate>
+  <classtemplate name="Utils" ref="shmc::impl::Utils#shmc::impl::Utils">
+    <templatetypeparameter id="shmc::impl::Utils::Dummy" name="Dummy" />
+  </classtemplate>
+  <enum anonymous="yes" id="shmc::impl::ShmAllocErrno" name="ShmAllocErrno">
+    <enumvalue id="shmc::impl::kErrOK" name="kErrOK" value="0" />
+    <enumvalue id="shmc::impl::kErrDefault" name="kErrDefault" value="1" />
+    <enumvalue id="shmc::impl::kErrNotExist" name="kErrNotExist" value="2" />
+    <enumvalue id="shmc::impl::kErrAlreadyExist" name="kErrAlreadyExist" value="3" />
+    <enumvalue id="shmc::impl::kErrInvalid" name="kErrInvalid" value="4" />
+    <enumvalue id="shmc::impl::kErrBadParam" name="kErrBadParam" value="5" />
+    <enumvalue id="shmc::impl::kErrPermission" name="kErrPermission" value="6" />
+    <enumvalue id="shmc::impl::kErrBiggerSize" name="kErrBiggerSize" value="7" />
+  </enum>
+  <enum anonymous="yes" id="shmc::impl::ShmAllocFlag" name="ShmAllocFlag">
+    <enumvalue id="shmc::impl::kCreate" name="kCreate" value="1" />
+    <enumvalue id="shmc::impl::kCreateExcl" name="kCreateExcl" value="2" />
+    <enumvalue id="shmc::impl::kReadOnly" name="kReadOnly" value="4" />
+  </enum>
+  <function id="shmc::impl::IsPrime" name="IsPrime">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::impl::IsPrime::num" name="num">
+      <type name="size_t" />
+    </argument>
+  </function>
+</namespace>

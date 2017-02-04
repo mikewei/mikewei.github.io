@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='utf-8'?>
+<classtemplate abstract="true" id="shmc::ShmHandle" name="ShmHandle" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> A shm reference holder</brief>
+  <doc>This is a helper class for shm manipulations. It offers simple interface
+to attach or create shm and hold a reference to the shm and handy methods
+to access the shm data.
+</doc>
+  <templatetypeparameter id="shmc::ShmHandle::T" name="T">
+    <brief>type of the header of shm, must StandardLayoutType</brief>
+  </templatetypeparameter>
+  <templatetypeparameter id="shmc::ShmHandle::Alloc" name="Alloc">
+    <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX]</brief>
+  </templatetypeparameter>
+  <constructor abstract="yes" id="shmc::ShmHandle::ShmHandle&lt;T, Alloc&gt;" name="ShmHandle&lt;T, Alloc&gt;" />
+  <destructor id="shmc::ShmHandle::~ShmHandle&lt;T, Alloc&gt;" name="~ShmHandle&lt;T, Alloc&gt;">
+    <brief> Destructor</brief>
+  </destructor>
+  <method id="shmc::ShmHandle::InitForWrite" name="InitForWrite">
+    <brief> Initializer for READ &amp; WRITE</brief>
+    <doc>This initializer should be called by the shm writer/owner and it will
+try to attach an existing shm or created a new one if needed and allowed.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHandle::InitForWrite::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHandle::InitForWrite::size" name="size">
+      <doc>size of the shm</doc>
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::ShmHandle::InitForWrite::create_flags" name="create_flags">
+      <type builtin="yes" name="int" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHandle::InitForRead" name="InitForRead">
+    <brief> Initializer for READ-ONLY</brief>
+    <doc>This initializer should be called by the shm reader and
+it will try to attach an existing shm with read-only mode.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHandle::InitForRead::key" name="key">
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHandle::InitForRead::size" name="size">
+      <doc>min-size of the shm to attach</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHandle::Reset" name="Reset">
+    <brief> Reset the handle</brief>
+    <doc>This will detach any attached shm.
+</doc>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+  </method>
+  <method id="shmc::ShmHandle::ptr" name="ptr">
+    <brief> getter</brief>
+    <return>
+      <doc>typed pointer to the attached shm</doc>
+      <type name="T" qualifier="*" />
+    </return>
+  </method>
+  <method id="shmc::ShmHandle::ptr" name="ptr">
+    <brief> getter</brief>
+    <return>
+      <doc>const-typed pointer to the attached shm</doc>
+      <type name="const T" qualifier=" const *" />
+    </return>
+  </method>
+  <method id="shmc::ShmHandle::operator-&gt;" name="operator-&gt;">
+    <brief> helper operator</brief>
+    <return>
+      <doc>typed pointer to the attached shm</doc>
+      <type name="T" qualifier="*" />
+    </return>
+  </method>
+  <method id="shmc::ShmHandle::operator-&gt;" name="operator-&gt;">
+    <brief> helper operator</brief>
+    <return>
+      <doc>const-typed pointer to the attached shm</doc>
+      <type name="const T" qualifier=" const *" />
+    </return>
+  </method>
+  <method id="shmc::ShmHandle::key" name="key">
+    <brief> getter</brief>
+    <return>
+      <doc>key string of the attached shm</doc>
+      <type name="std::string" />
+    </return>
+  </method>
+  <method id="shmc::ShmHandle::size" name="size">
+    <brief> getter</brief>
+    <return>
+      <doc>actual size of the attached shm</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method id="shmc::ShmHandle::is_newly_created" name="is_newly_created">
+    <brief> getter</brief>
+    <return>
+      <doc>whether the attached shm is newly created</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+  </method>
+  <method id="shmc::ShmHandle::is_initialized" name="is_initialized">
+    <brief> getter</brief>
+    <return>
+      <doc>whether the handle is initialized.</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+  </method>
+  <method id="shmc::ShmHandle::CheckSize" name="CheckSize">
+    <brief> Check whether shm size_ is equal to expected_size with consideration of</brief>
+    <doc>alignment of the allocator
+
+</doc>
+    <return>
+      <doc>true if equal</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHandle::CheckSize::expected_size" name="expected_size">
+      <type name="size_t" />
+    </argument>
+  </method>
+</classtemplate>

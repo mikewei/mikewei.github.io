@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="shmc::ShmHashTableM::TravelPos" name="TravelPos" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> Cursor type recording current travelling position</brief>
+  <field id="shmc::ShmHashTableM::TravelPos::row" name="row">
+    <type name="uint32_t" />
+  </field>
+  <field id="shmc::ShmHashTableM::TravelPos::col" name="col">
+    <type name="uint32_t" />
+  </field>
+  <constructor id="shmc::ShmHashTableM::TravelPos::TravelPos" name="TravelPos" />
+  <method id="shmc::ShmHashTableM::TravelPos::at_origin" name="at_origin">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+  </method>
+</struct>

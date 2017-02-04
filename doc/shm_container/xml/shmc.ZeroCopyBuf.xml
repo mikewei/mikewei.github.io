@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="shmc::ZeroCopyBuf" name="ZeroCopyBuf" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> Descriptor of internal buffer of ShmQueue for zero-copy</brief>
+  <doc>This descriptor containing a pointer and a length points to the
+internal buffer of the queue which can be directly read or written.
+</doc>
+  <field id="shmc::ZeroCopyBuf::ptr" name="ptr">
+    <type builtin="yes" name="void" qualifier="*" />
+  </field>
+  <field id="shmc::ZeroCopyBuf::len" name="len">
+    <type name="size_t" />
+  </field>
+</struct>

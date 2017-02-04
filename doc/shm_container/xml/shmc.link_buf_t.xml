@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="shmc::link_buf_t" name="link_buf_t" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> Handle type of link-buffer</brief>
+  <doc>The library user need not care about the implementation and just use
+it as a basic type which is assignable and comparable.
+</doc>
+  <field id="shmc::link_buf_t::head" name="head">
+    <type name="uint32_t" />
+  </field>
+  <field id="shmc::link_buf_t::tag" name="tag">
+    <type name="uint32_t" />
+  </field>
+  <constructor id="shmc::link_buf_t::link_buf_t" name="link_buf_t" />
+  <constructor id="shmc::link_buf_t::link_buf_t" name="link_buf_t">
+    <argument id="shmc::link_buf_t::link_buf_t::h" name="h">
+      <type name="uint32_t" />
+    </argument>
+    <argument id="shmc::link_buf_t::link_buf_t::t" name="t">
+      <type name="uint32_t" />
+    </argument>
+  </constructor>
+  <constructor id="shmc::link_buf_t::link_buf_t" name="link_buf_t">
+    <argument id="shmc::link_buf_t::link_buf_t::lb" name="lb">
+      <type name="link_buf_t" qualifier=" const &amp;" ref="shmc::link_buf_t#shmc::link_buf_t" />
+    </argument>
+  </constructor>
+  <conversionfunction id="shmc::link_buf_t::operator bool" name="operator bool">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+  </conversionfunction>
+  <method id="shmc::link_buf_t::operator!=" name="operator!=">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::link_buf_t::operator!=::lb" name="lb">
+      <type name="link_buf_t" qualifier=" const &amp;" ref="shmc::link_buf_t#shmc::link_buf_t" />
+    </argument>
+  </method>
+  <method id="shmc::link_buf_t::operator=" name="operator=">
+    <return>
+      <type name="link_buf_t" qualifier=" &amp;" ref="shmc::link_buf_t#shmc::link_buf_t" />
+    </return>
+    <argument id="shmc::link_buf_t::operator=::lb" name="lb">
+      <type name="link_buf_t" qualifier=" const &amp;" ref="shmc::link_buf_t#shmc::link_buf_t" />
+    </argument>
+  </method>
+  <method id="shmc::link_buf_t::operator=" name="operator=">
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="shmc::link_buf_t::operator=::lb" name="lb">
+      <type name="link_buf_t" qualifier=" const &amp;" ref="shmc::link_buf_t#shmc::link_buf_t" />
+    </argument>
+  </method>
+  <method id="shmc::link_buf_t::operator==" name="operator==">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::link_buf_t::operator==::lb" name="lb">
+      <type name="link_buf_t" qualifier=" const &amp;" ref="shmc::link_buf_t#shmc::link_buf_t" />
+    </argument>
+  </method>
+</struct>

@@ -1,0 +1,224 @@
+<?xml version='1.0' encoding='utf-8'?>
+<classtemplate abstract="true" id="shmc::ShmLinkTable" name="ShmLinkTable" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> A container of variable length buffers</brief>
+  <doc>Buffer of variable length can be stored as linked memory blocks in the
+container, called link-buf here. The container has a block memory pool
+and use a free block list to manage free space, it also works hard to
+check for data integrity and memory leak.
+
+Read-Write concurrency safety is offered internally in a lock-free manner,
+but Write-Write is not and needs external synchronization.
+
+This is a low-level container, consider use <ref ref="shmc::ShmHashMap#shmc::ShmHashMap">shmc::ShmHashMap</ref> first.
+</doc>
+  <templatetypeparameter id="shmc::ShmLinkTable::Alloc" name="Alloc">
+    <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+    <default>
+      <type name="shmc::SVIPC" />
+    </default>
+  </templatetypeparameter>
+  <constructor abstract="yes" id="shmc::ShmLinkTable::ShmLinkTable&lt;Alloc&gt;" name="ShmLinkTable&lt;Alloc&gt;" />
+  <method id="shmc::ShmLinkTable::InitForWrite" name="InitForWrite">
+    <brief> Initializer for READ &amp; WRITE</brief>
+    <doc>This initializer should be called by the container writer/owner and
+it will try to attach an existing shm or created a new one if needed.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmLinkTable::InitForWrite::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach or create</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmLinkTable::InitForWrite::user_node_size" name="user_node_size">
+      <doc>size of node space used for user data storage</doc>
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::ShmLinkTable::InitForWrite::user_node_num" name="user_node_num">
+      <doc>total number of nodes of the container</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmLinkTable::InitForRead" name="InitForRead">
+    <brief> Initializer for READ-ONLY</brief>
+    <doc>This initializer should be called by the container reader and
+it will try to attach an existing shm with read-only mode.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmLinkTable::InitForRead::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmLinkTable::New" name="New">
+    <brief> Allocate a new link-buffer</brief>
+    <doc>This method allocate @size space for the new buffer and copy @buf
+to it and finally return a handle of link_buf_t.
+
+</doc>
+    <return>
+      <doc>the newly created link_buf or empty one if failed</doc>
+      <type name="link_buf_t" ref="shmc::link_buf_t#shmc::link_buf_t" />
+    </return>
+    <argument id="shmc::ShmLinkTable::New::buf" name="buf">
+      <doc>pointer of buf to copy from</doc>
+      <type builtin="yes" name="void" qualifier=" const *" />
+    </argument>
+    <argument id="shmc::ShmLinkTable::New::size" name="size">
+      <doc>size of @buf and the new buffer</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmLinkTable::Read" name="Read">
+    <brief> Read link-buffer and copy to an user buf</brief>
+    <doc>This method will copy data from link-buf to user @buf. The actual copy
+length is MIN(link-buf-size, user-buf-size), that means if link-buf-size
+&lt; user-buf-size all link-buf data will be copied to the user buf and if
+link-buf-size &gt; user-buf-size data will be truncated to fill user-buf
+fully. In any case the real size of link-buf will be returned through
+param size.
+If Read() is called while other process/thread is calling Free()
+concurrently this may fail and return false.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmLinkTable::Read::link_buf" name="link_buf">
+      <doc>handle of link-buf to copy from</doc>
+      <type name="link_buf_t" ref="shmc::link_buf_t#shmc::link_buf_t" />
+    </argument>
+    <argument id="shmc::ShmLinkTable::Read::buf" name="buf">
+      <doc>[out] user buf to copy to</doc>
+      <type builtin="yes" name="void" qualifier="*" />
+    </argument>
+    <argument id="shmc::ShmLinkTable::Read::size" name="size">
+      <doc>[in|out] size of @buf as input and size of link-buf as output</doc>
+      <type name="size_t" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::ShmLinkTable::Read" name="Read">
+    <brief> Read link-buffer and copy to a std::string</brief>
+    <doc>This method will write all data of link-buf to the string @out.
+If Read() is called while other process/thread is calling Free()
+concurrently this may fail and return false.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmLinkTable::Read::link_buf" name="link_buf">
+      <doc>handle of link-buf to copy from</doc>
+      <type name="link_buf_t" ref="shmc::link_buf_t#shmc::link_buf_t" />
+    </argument>
+    <argument id="shmc::ShmLinkTable::Read::out" name="out">
+      <doc>[out] output string to copy to</doc>
+      <type name="std::string" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::ShmLinkTable::Free" name="Free">
+    <brief> Free a link-buffer</brief>
+    <doc>This method will recycle all nodes of the link-buffer.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmLinkTable::Free::link_buf" name="link_buf">
+      <doc>handle of link-buf to free</doc>
+      <type name="link_buf_t" ref="shmc::link_buf_t#shmc::link_buf_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmLinkTable::Dump" name="Dump">
+    <brief> Dump link-buffer info to log handler</brief>
+    <doc>This method will read the link-buffer and dump the structure and content
+details to log handler.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmLinkTable::Dump::link_buf" name="link_buf">
+      <doc>handle of link-buf to dump</doc>
+      <type name="link_buf_t" ref="shmc::link_buf_t#shmc::link_buf_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmLinkTable::Travel" name="Travel">
+    <brief> Travel all the link-buffers</brief>
+    <doc>This method will scan all nodes and find all present link-buffers and
+call the callback @f for each one.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmLinkTable::Travel::f" name="f">
+      <doc>callback to be called when visiting each link-buffer</doc>
+      <type name="std::function&lt;void (shmc::link_buf_t)&gt;" />
+    </argument>
+  </method>
+  <struct name="HealthStat" ref="shmc::ShmLinkTable::HealthStat#shmc::ShmLinkTable::HealthStat">
+    <brief>Health infomation about the container</brief>
+  </struct>
+  <method id="shmc::ShmLinkTable::HealthCheck" name="HealthCheck">
+    <brief> Do health check for the container.</brief>
+    <doc>This method will do a whole health check for potential data integrity
+issues such as bad linked list, corrupted data, memory leak and so on.
+If errors found it usually means external unexpected overflow or bug of
+the library self. If auto_fix is true it will try to fix the error by
+removing bad links, freeing leaked nodes and so on.
+
+</doc>
+    <return>
+      <doc>true if finished the check successfully</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmLinkTable::HealthCheck::hstat" name="hstat">
+      <doc>[out] the health check result.</doc>
+      <type name="ShmLinkTable&lt;Alloc&gt;::HealthStat" qualifier="*" ref="shmc::ShmLinkTable::HealthStat#shmc::ShmLinkTable::HealthStat" />
+    </argument>
+    <argument id="shmc::ShmLinkTable::HealthCheck::auto_fix" name="auto_fix">
+      <doc>whether do error fix if possible.</doc>
+      <type builtin="yes" name="bool" />
+    </argument>
+  </method>
+  <method id="shmc::ShmLinkTable::free_nodes" name="free_nodes">
+    <brief> getter</brief>
+    <return>
+      <doc>total number of free nodes</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method id="shmc::ShmLinkTable::total_nodes" name="total_nodes">
+    <brief> getter</brief>
+    <return>
+      <doc>total number of nodes</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method id="shmc::ShmLinkTable::link_bufs" name="link_bufs">
+    <brief> getter</brief>
+    <return>
+      <doc>total number of link-buffers</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method id="shmc::ShmLinkTable::link_buf_bytes" name="link_buf_bytes">
+    <brief> getter</brief>
+    <return>
+      <doc>total bytes of link-buffers</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+</classtemplate>

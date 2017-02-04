@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='utf-8'?>
+<classtemplate abstract="true" id="shmc::ShmQueue" name="ShmQueue" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> A one-writer-one-reader FIFO queue</brief>
+  <doc>ShmQueue is implemented as a FIFO queue of fixed size. One writer/producer
+is assumed to push new data to the tail of the queue, and one
+reader/consumer can read concurrently from the head of the queue. If
+producing of the writer is much faster than consuming of the reader the
+queue would be full and the writer would fail to push data until more data
+is popped.
+
+Read-Write concurrency safety is offered internally in a lock-free manner,
+but Write-Write or Read-Read is not. If you have multi-readers or
+multi-writers you can either 1) create a group of ShmQueue or 2) using
+external locks.
+</doc>
+  <templatetypeparameter id="shmc::ShmQueue::Alloc" name="Alloc">
+    <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+    <default>
+      <type name="shmc::SVIPC" />
+    </default>
+  </templatetypeparameter>
+  <constructor abstract="yes" id="shmc::ShmQueue::ShmQueue&lt;Alloc&gt;" name="ShmQueue&lt;Alloc&gt;" />
+  <method id="shmc::ShmQueue::InitForWrite" name="InitForWrite">
+    <brief> Initializer for write (as producer)</brief>
+    <doc>This initializer should be called by the container producer and
+it will try to attach an existing shm or created a new one if needed.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmQueue::InitForWrite::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach or create</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmQueue::InitForWrite::buf_size_bytes" name="buf_size_bytes">
+      <doc>size of the sync buffer</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmQueue::InitForRead" name="InitForRead">
+    <brief> Initializer for read (as consumer)</brief>
+    <doc>This initializer should be called by the queue consumer and
+it will try to attach an existing shm.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmQueue::InitForRead::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmQueue::Push" name="Push">
+    <brief> Push data to the queue</brief>
+    <doc>Push data of buffer to the queue unless the queue is full.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmQueue::Push::buf" name="buf">
+      <doc>pointer to the data to be pushed</doc>
+      <type builtin="yes" name="void" qualifier=" const *" />
+    </argument>
+    <argument id="shmc::ShmQueue::Push::len" name="len">
+      <doc>size of @buf</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmQueue::Push" name="Push">
+    <brief> Push data to the queue</brief>
+    <doc>Push data of string to the queue unless the queue is full.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmQueue::Push::data" name="data">
+      <doc>data to be pushed</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmQueue::Pop" name="Pop">
+    <brief> Pop data from the queue</brief>
+    <doc>Pop data from the queue unless the queue is empty. As input param *@len
+should be the allocated length of @buf, and when the function returns
+successfully *@len records the actual length of data popped.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmQueue::Pop::buf" name="buf">
+      <doc>[out] pointer to the buffer for popped data</doc>
+      <type builtin="yes" name="void" qualifier="*" />
+    </argument>
+    <argument id="shmc::ShmQueue::Pop::len" name="len">
+      <doc>[in|out] pointer to length of the buffer</doc>
+      <type name="size_t" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::ShmQueue::Pop" name="Pop">
+    <brief> Pop data from the queue</brief>
+    <doc>Pop data from the queue unless the queue is empty.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmQueue::Pop::data" name="data">
+      <doc>[out] pointer to data popped</doc>
+      <type name="std::string" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::ShmQueue::ZeroCopyPushPrepare" name="ZeroCopyPushPrepare">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmQueue::ZeroCopyPushPrepare::len" name="len">
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::ShmQueue::ZeroCopyPushPrepare::zcb" name="zcb">
+      <type name="ZeroCopyBuf" qualifier="*" ref="shmc::ZeroCopyBuf#shmc::ZeroCopyBuf" />
+    </argument>
+  </method>
+  <method id="shmc::ShmQueue::ZeroCopyPushCommit" name="ZeroCopyPushCommit">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmQueue::ZeroCopyPushCommit::zcb" name="zcb">
+      <type name="ZeroCopyBuf" qualifier=" const &amp;" ref="shmc::ZeroCopyBuf#shmc::ZeroCopyBuf" />
+    </argument>
+  </method>
+  <method id="shmc::ShmQueue::ZeroCopyPopPrepare" name="ZeroCopyPopPrepare">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmQueue::ZeroCopyPopPrepare::zcb" name="zcb">
+      <type name="ZeroCopyBuf" qualifier="*" ref="shmc::ZeroCopyBuf#shmc::ZeroCopyBuf" />
+    </argument>
+  </method>
+  <method id="shmc::ShmQueue::ZeroCopyPopCommit" name="ZeroCopyPopCommit">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmQueue::ZeroCopyPopCommit::zcb" name="zcb">
+      <type name="ZeroCopyBuf" qualifier=" const &amp;" ref="shmc::ZeroCopyBuf#shmc::ZeroCopyBuf" />
+    </argument>
+  </method>
+</classtemplate>

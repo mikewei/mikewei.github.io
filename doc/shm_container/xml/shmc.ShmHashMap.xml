@@ -1,0 +1,291 @@
+<?xml version='1.0' encoding='utf-8'?>
+<classtemplate abstract="true" id="shmc::ShmHashMap" name="ShmHashMap" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> A hash-map container of key-values</brief>
+  <doc>HashMap stores collection of Key-Values and supports fast queries. The key
+is of scalar or struct type and the value is a variable-length buffer.
+The container internally uses <ref ref="shmc::ShmHashTable#shmc::ShmHashTable">shmc::ShmHashTable</ref> to index keys and uses
+<ref ref="shmc::ShmLinkTable#shmc::ShmLinkTable">shmc::ShmLinkTable</ref> to store values.
+
+Read-Write concurrency safety is offered internally in a lock-free manner,
+but Write-Write is not and needs external synchronization.
+</doc>
+  <templatetypeparameter id="shmc::ShmHashMap::KeyType" name="KeyType">
+    <brief>type of key, need StandardLayoutType supporting =,==,std::hash</brief>
+  </templatetypeparameter>
+  <templatetypeparameter id="shmc::ShmHashMap::Alloc" name="Alloc">
+    <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+    <default>
+      <type name="shmc::SVIPC" />
+    </default>
+  </templatetypeparameter>
+  <constructor abstract="yes" id="shmc::ShmHashMap::ShmHashMap&lt;KeyType, Alloc&gt;" name="ShmHashMap&lt;KeyType, Alloc&gt;" />
+  <method id="shmc::ShmHashMap::InitForWrite" name="InitForWrite">
+    <brief> Initializer for READ &amp; WRITE</brief>
+    <doc>This initializer should be called by the container writer/owner and
+it will try to attach an existing shm or created a new one if needed.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::InitForWrite::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach or create</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHashMap::InitForWrite::key_num" name="key_num">
+      <doc>max number of keys</doc>
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::ShmHashMap::InitForWrite::val_node_size" name="val_node_size">
+      <doc>size of each node used to store values</doc>
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::ShmHashMap::InitForWrite::val_node_num" name="val_node_num">
+      <doc>total number of nodes for values storage</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashMap::InitForRead" name="InitForRead">
+    <brief> Initializer for READ-ONLY</brief>
+    <doc>This initializer should be called by the container reader and
+it will try to attach an existing shm with read-only mode.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::InitForRead::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashMap::Find" name="Find">
+    <brief> Find value by key</brief>
+    <doc>This is a read-only operation and can be called concurrently with other
+process/thread writing.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::Find::key" name="key">
+      <doc>key to search for</doc>
+      <type name="const KeyType" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHashMap::Find::val" name="val">
+      <doc>[out] found value</doc>
+      <type name="std::string" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashMap::Insert" name="Insert">
+    <brief> Insert key-value (only if key not exist)</brief>
+    <doc>Try to insert key-value to the container, if the key has already exist
+the method fail and return false.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::Insert::key" name="key">
+      <doc>key to insert</doc>
+      <type name="const KeyType" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHashMap::Insert::val_buf" name="val_buf">
+      <doc>pointer to buffer of the value</doc>
+      <type builtin="yes" name="void" qualifier=" const *" />
+    </argument>
+    <argument id="shmc::ShmHashMap::Insert::val_buf_len" name="val_buf_len">
+      <doc>size of the buffer</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashMap::Insert" name="Insert">
+    <brief> Insert key-value (only if key not exist)</brief>
+    <doc>Try to insert key-value to the container, if the key has already exist
+the method fail and return false.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::Insert::key" name="key">
+      <doc>key to insert</doc>
+      <type name="const KeyType" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHashMap::Insert::val" name="val">
+      <doc>value to insert</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashMap::Replace" name="Replace">
+    <brief> Replace key-value into the container</brief>
+    <doc>Try to replace key-value into the container, if the key does not exist
+the key-value will be inserted, otherwise the value will be updated.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::Replace::key" name="key">
+      <doc>key to replace</doc>
+      <type name="const KeyType" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHashMap::Replace::val_buf" name="val_buf">
+      <doc>pointer to buffer of the value</doc>
+      <type builtin="yes" name="void" qualifier=" const *" />
+    </argument>
+    <argument id="shmc::ShmHashMap::Replace::val_buf_len" name="val_buf_len">
+      <doc>size of the buffer</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashMap::Replace" name="Replace">
+    <brief> Replace key-value into the container</brief>
+    <doc>Try to replace key-value into the container, if the key does not exist
+the key-value will be inserted, otherwise the value will be updated.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::Replace::key" name="key">
+      <doc>key to insert</doc>
+      <type name="const KeyType" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHashMap::Replace::val" name="val">
+      <doc>value to insert</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashMap::Erase" name="Erase">
+    <brief> Erase one key-value</brief>
+    <doc>This tries to find the key-value and erase it.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::Erase::key" name="key">
+      <doc>key to find and erase</doc>
+      <type name="const KeyType" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashMap::Dump" name="Dump">
+    <brief> Dump key-value storage details to log</brief>
+    <doc>This method will try to find the key and dump the structure and content
+details to log handler.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::Dump::key" name="key">
+      <doc>key to find and dump</doc>
+      <type name="const KeyType" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <struct name="TravelPos" ref="shmc::ShmHashMap::TravelPos#shmc::ShmHashMap::TravelPos">
+    <brief> Cursor type recording current travelling position</brief>
+  </struct>
+  <method id="shmc::ShmHashMap::Travel" name="Travel">
+    <brief> Travel key-values</brief>
+    <doc>This method will scan keys from start position and find key-values and
+call the callback @f for each one. If @max_travel_nodes key-values have
+been travelled this method will stop and save the position to @pos.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::Travel::pos" name="pos">
+      <doc>[in|out] current position of travel</doc>
+      <type name="ShmHashMap&lt;KeyType, Alloc&gt;::TravelPos" qualifier="*" ref="shmc::ShmHashMap::TravelPos#shmc::ShmHashMap::TravelPos" />
+    </argument>
+    <argument id="shmc::ShmHashMap::Travel::max_travel_nodes" name="max_travel_nodes">
+      <doc>max nodes to travel in this method call, 0 for all</doc>
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::ShmHashMap::Travel::f" name="f">
+      <doc>callback to be called when visiting each key-value</doc>
+      <type name="std::function&lt;_Signature&gt;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashMap::Travel" name="Travel">
+    <brief> Travel all key-values</brief>
+    <doc>This method will scan all keys and find all present key-values and
+call the callback @f for each one.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::Travel::f" name="f">
+      <doc>callback to be called when visiting each key-value</doc>
+      <type name="std::function&lt;_Signature&gt;" />
+    </argument>
+  </method>
+  <struct name="HealthStat" ref="shmc::ShmHashMap::HealthStat#shmc::ShmHashMap::HealthStat">
+    <brief>Health infomation about the container</brief>
+  </struct>
+  <method id="shmc::ShmHashMap::HealthCheck" name="HealthCheck">
+    <brief> Do health check for the container.</brief>
+    <doc>This method will do a whole health check for potential data integrity
+issues such as bad linked list, corrupted data, memory leak and so on.
+If errors found it usually means external unexpected overflow or bug of
+the library itself. If auto_fix is true it will try to fix the error by
+removing bad links, freeing leaked nodes and so on.
+
+</doc>
+    <return>
+      <doc>true if finished the check successfully</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashMap::HealthCheck::hstat" name="hstat">
+      <doc>[out] the health check result.</doc>
+      <type name="ShmHashMap&lt;KeyType, Alloc&gt;::HealthStat" qualifier="*" ref="shmc::ShmHashMap::HealthStat#shmc::ShmHashMap::HealthStat" />
+    </argument>
+    <argument id="shmc::ShmHashMap::HealthCheck::auto_fix" name="auto_fix">
+      <doc>whether do error fix if possible.</doc>
+      <type builtin="yes" name="bool" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashMap::size" name="size">
+    <brief> getter</brief>
+    <return>
+      <doc>total number of key-values</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method id="shmc::ShmHashMap::hash_table_free_percentage" name="hash_table_free_percentage">
+    <brief> getter</brief>
+    <return>
+      <doc>percentage of free space of HashTable index</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method id="shmc::ShmHashMap::link_table_free_percentage" name="link_table_free_percentage">
+    <brief> getter</brief>
+    <return>
+      <doc>percentage of free space of LinkTable storage</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method id="shmc::ShmHashMap::free_percentage" name="free_percentage">
+    <brief> getter</brief>
+    <return>
+      <doc>percentage of free space of the container</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+</classtemplate>

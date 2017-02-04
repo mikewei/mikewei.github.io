@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='utf-8'?>
+<namespace id="shmc" name="shmc" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>namespace of library</brief>
+  <doc>All containers support following allocators:
+
+* SVIPC          - SysV IPC shared memory (shmget, shmat, ...)
+* SVIP\_HugeTLB  - SysV IPC shared memory with HugeTLB enabled (2M page)
+* POSIX          - POSIX shared memory (shm\_open, shm\_unlink, ...)
+* ANON           - anonymous shared memory, allocated by mmap(2) with MAP\_SHARED|MAP\_ANONYMOUS
+* HEAP           - process private memory, allocated by mmap(2) with MAP\_PRIVATE|MAP\_ANONYMOUS
+
+All APIs are in this namespace. See Classed listed below.
+</doc>
+  <namespace name="impl" ref="shmc::impl#shmc::impl">
+    <brief>internal use</brief>
+  </namespace>
+  <struct name="link_buf_t" ref="shmc::link_buf_t#shmc::link_buf_t">
+    <brief> Handle type of link-buffer</brief>
+  </struct>
+  <classtemplate name="ShmArray" ref="shmc::ShmArray#shmc::ShmArray">
+    <brief> A fixed-size array container</brief>
+    <templatetypeparameter id="shmc::ShmArray::Node" name="Node">
+      <brief>type of array node, must be StandardLayoutType</brief>
+    </templatetypeparameter>
+    <templatetypeparameter id="shmc::ShmArray::Alloc" name="Alloc">
+      <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+      <default>
+        <type name="shmc::SVIPC" />
+      </default>
+    </templatetypeparameter>
+  </classtemplate>
+  <classtemplate name="ShmHandle" ref="shmc::ShmHandle#shmc::ShmHandle">
+    <brief> A shm reference holder</brief>
+    <templatetypeparameter id="shmc::ShmHandle::T" name="T">
+      <brief>type of the header of shm, must StandardLayoutType</brief>
+    </templatetypeparameter>
+    <templatetypeparameter id="shmc::ShmHandle::Alloc" name="Alloc">
+      <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX]</brief>
+    </templatetypeparameter>
+  </classtemplate>
+  <classtemplate name="ShmHashMap" ref="shmc::ShmHashMap#shmc::ShmHashMap">
+    <brief> A hash-map container of key-values</brief>
+    <templatetypeparameter id="shmc::ShmHashMap::KeyType" name="KeyType">
+      <brief>type of key, need StandardLayoutType supporting =,==,std::hash</brief>
+    </templatetypeparameter>
+    <templatetypeparameter id="shmc::ShmHashMap::Alloc" name="Alloc">
+      <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+      <default>
+        <type name="shmc::SVIPC" />
+      </default>
+    </templatetypeparameter>
+  </classtemplate>
+  <classtemplate name="ShmHashTable" ref="shmc::ShmHashTable#shmc::ShmHashTable">
+    <brief> A shm implementation of hash table (faster version, default choice)</brief>
+    <templatetypeparameter id="shmc::ShmHashTable::Key" name="Key">
+      <brief>type of search key, any type supporting =,==,std::hash</brief>
+    </templatetypeparameter>
+    <templatetypeparameter id="shmc::ShmHashTable::Node" name="Node">
+      <brief>type of node which contains both key and value information</brief>
+    </templatetypeparameter>
+    <templatetypeparameter id="shmc::ShmHashTable::Alloc" name="Alloc">
+      <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+      <default>
+        <type name="shmc::SVIPC" />
+      </default>
+    </templatetypeparameter>
+  </classtemplate>
+  <classtemplate name="ShmHashTableM" ref="shmc::ShmHashTableM#shmc::ShmHashTableM">
+    <brief> A shm implementation of hash table (classic version, memory effecient)</brief>
+    <templatetypeparameter id="shmc::ShmHashTableM::Key" name="Key">
+      <brief>type of search key, any type supporting =,==,std::hash</brief>
+    </templatetypeparameter>
+    <templatetypeparameter id="shmc::ShmHashTableM::Node" name="Node">
+      <brief>type of node which contains both key and value infomation</brief>
+    </templatetypeparameter>
+    <templatetypeparameter id="shmc::ShmHashTableM::Alloc" name="Alloc">
+      <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+      <default>
+        <type name="shmc::SVIPC" />
+      </default>
+    </templatetypeparameter>
+  </classtemplate>
+  <classtemplate name="ShmLinkTable" ref="shmc::ShmLinkTable#shmc::ShmLinkTable">
+    <brief> A container of variable length buffers</brief>
+    <templatetypeparameter id="shmc::ShmLinkTable::Alloc" name="Alloc">
+      <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+      <default>
+        <type name="shmc::SVIPC" />
+      </default>
+    </templatetypeparameter>
+  </classtemplate>
+  <classtemplate name="ShmQueue" ref="shmc::ShmQueue#shmc::ShmQueue">
+    <brief> A one-writer-one-reader FIFO queue</brief>
+    <templatetypeparameter id="shmc::ShmQueue::Alloc" name="Alloc">
+      <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+      <default>
+        <type name="shmc::SVIPC" />
+      </default>
+    </templatetypeparameter>
+  </classtemplate>
+  <classtemplate name="ShmSyncBuf" ref="shmc::ShmSyncBuf#shmc::ShmSyncBuf">
+    <brief> A one-writer-multi-reader broadcast queue useful for replica data sync</brief>
+    <templatetypeparameter id="shmc::ShmSyncBuf::Alloc" name="Alloc">
+      <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+      <default>
+        <type name="shmc::SVIPC" />
+      </default>
+    </templatetypeparameter>
+  </classtemplate>
+  <struct name="SyncIter" ref="shmc::SyncIter#shmc::SyncIter">
+    <brief> Iterator for reading SyncBuf</brief>
+  </struct>
+  <struct name="SyncMeta" ref="shmc::SyncMeta#shmc::SyncMeta">
+    <brief> Meta data of sync node</brief>
+  </struct>
+  <struct name="ZeroCopyBuf" ref="shmc::ZeroCopyBuf#shmc::ZeroCopyBuf">
+    <brief> Descriptor of internal buffer of ShmQueue for zero-copy</brief>
+  </struct>
+  <enum anonymous="yes" id="shmc::LogLevel" name="LogLevel">
+    <brief> Log level definition of the library</brief>
+    <enumvalue id="shmc::kError" name="kError" value="1" />
+    <enumvalue id="shmc::kWarning" name="kWarning" value="2" />
+    <enumvalue id="shmc::kInfo" name="kInfo" value="3" />
+    <enumvalue id="shmc::kDebug" name="kDebug" value="4" />
+    <function id="shmc::SetLogHandler" name="SetLogHandler">
+      <brief> Set the library log level and log handler</brief>
+      <doc>This function must be called before any container initialized.
+</doc>
+      <return>
+        <type builtin="yes" name="void" />
+      </return>
+      <argument id="shmc::SetLogHandler::log_level" name="log_level">
+        <doc>- only logs with level &lt;= @log_level will be handled</doc>
+        <type name="LogLevel" ref="shmc#shmc::LogLevel" />
+      </argument>
+      <argument id="shmc::SetLogHandler::log_func" name="log_func">
+        <doc>- callback to output logs</doc>
+        <type name="std::function&lt;void (shmc::LogLevel, const char *)&gt;" />
+      </argument>
+    </function>
+  </enum>
+  <enum anonymous="yes" id="shmc::ShmCreateFlag" name="ShmCreateFlag">
+    <brief> bit-flag of deciding when to create shm</brief>
+    <enumvalue id="shmc::kNoCreate" name="kNoCreate" value="0">
+      <brief>(all bits cleared) never create shm only attach existing one</brief>
+    </enumvalue>
+    <enumvalue id="shmc::kCreateIfNotExist" name="kCreateIfNotExist" value="1">
+      <brief>(1st bit) create shm if not exist</brief>
+    </enumvalue>
+    <enumvalue id="shmc::kCreateIfExtending" name="kCreateIfExtending" value="2">
+      <brief>(2nd bit) create new shm if bigger size requested</brief>
+    </enumvalue>
+  </enum>
+  <function id="shmc::SetDefaultCreateFlags" name="SetDefaultCreateFlags">
+    <brief> Set default create-flags used in container's InitForWrite</brief>
+    <doc>By default kCreateIfNotExist is used when InitForWrite is running. You can
+override it by calling this function. For example, if you are upgrading
+the container for larger volume you can set kCreateIfExtending to allow
+delete-then-recreate behavior automatically.
+This function must be called before any container initialized.
+</doc>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="shmc::SetDefaultCreateFlags::create_flags" name="create_flags">
+      <doc>- bit-OR of some ShmCreateFlag</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+  </function>
+  <function id="shmc::SetLogHandler" name="SetLogHandler">
+    <brief> Set the library log level and log handler</brief>
+    <doc>This function must be called before any container initialized.
+</doc>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="shmc::SetLogHandler::log_level" name="log_level">
+      <doc>- only logs with level &lt;= @log_level will be handled</doc>
+      <type name="LogLevel" ref="shmc#shmc::LogLevel" />
+    </argument>
+    <argument id="shmc::SetLogHandler::log_func" name="log_func">
+      <doc>- callback to output logs</doc>
+      <type name="std::function&lt;void (shmc::LogLevel, const char *)&gt;" />
+    </argument>
+  </function>
+</namespace>

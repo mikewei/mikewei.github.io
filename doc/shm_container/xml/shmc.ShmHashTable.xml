@@ -1,0 +1,249 @@
+<?xml version='1.0' encoding='utf-8'?>
+<classtemplate abstract="true" id="shmc::ShmHashTable" name="ShmHashTable" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> A shm implementation of hash table (faster version, default choice)</brief>
+  <doc>This hash table implementation uses a pre-allocated array of fixed-size
+nodes in shm. The array of nodes is treated as a multi-rows hash-table and
+the hash colision is solved by rehashes on different rows. The number of
+rows and the size of each row is well tunned to get good time and space
+performance.
+
+Read-Write concurrency safety should be considered by the user, for example
+race conditions such as key-readying by Node::Key() and key-writing of the
+same node, such as value-reading and value-updating of the same node.
+
+This is a low-level container, consider use <ref ref="shmc::ShmHashMap#shmc::ShmHashMap">shmc::ShmHashMap</ref> first.
+
+Param @Node can be any StandardLayoutType with a get-key method as below:
+   pair&amp;lt;bool,Key&amp;gt; Node::Key() const volatile;
+                        or
+   pair&amp;lt;bool,Key&amp;gt; Node::Key(Arg arg) const volatile;
+first bool element of returned pair indicates whether the node is used,
+and if true the second element holds the key of the node.
+</doc>
+  <templatetypeparameter id="shmc::ShmHashTable::Key" name="Key">
+    <brief>type of search key, any type supporting =,==,std::hash</brief>
+  </templatetypeparameter>
+  <templatetypeparameter id="shmc::ShmHashTable::Node" name="Node">
+    <brief>type of node which contains both key and value information</brief>
+  </templatetypeparameter>
+  <templatetypeparameter id="shmc::ShmHashTable::Alloc" name="Alloc">
+    <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+    <default>
+      <type name="shmc::SVIPC" />
+    </default>
+  </templatetypeparameter>
+  <constructor abstract="yes" id="shmc::ShmHashTable::ShmHashTable&lt;Key, Node, Alloc&gt;" name="ShmHashTable&lt;Key, Node, Alloc&gt;" />
+  <method id="shmc::ShmHashTable::InitForWrite" name="InitForWrite">
+    <brief> Initializer for READ &amp; WRITE</brief>
+    <doc>This initializer should be called by the container writer/owner and
+it will try to attach an existing shm or created a new one if needed.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashTable::InitForWrite::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach or create</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHashTable::InitForWrite::capacity" name="capacity">
+      <doc>expected capacity of hash-table</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashTable::InitForRead" name="InitForRead">
+    <brief> Initializer for READ-ONLY</brief>
+    <doc>This initializer should be called by the container reader and
+it will try to attach an existing shm with read-only mode.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashTable::InitForRead::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashTable::Find" name="Find">
+    <brief> Find node by key</brief>
+    <doc>This const method returns pointer to const node (read-only) if found.
+
+</doc>
+    <return>
+      <doc>pointer to node if found, otherwise nullptr</doc>
+      <type name="const volatile Node" qualifier=" const *" />
+    </return>
+    <argument id="shmc::ShmHashTable::Find::key" name="key">
+      <doc>key to find</doc>
+      <type name="const Key" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashTable::Find" name="Find">
+    <brief> Find node by key</brief>
+    <doc>This method returns pointer to non-const node if found and user can
+update the content of the node. Note that Read-Write concurrency safety
+should be considered.
+
+</doc>
+    <return>
+      <doc>pointer to node if found, otherwise nullptr</doc>
+      <type name="volatile Node" qualifier="*" />
+    </return>
+    <argument id="shmc::ShmHashTable::Find::key" name="key">
+      <doc>key to find</doc>
+      <type name="const Key" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashTable::FindOrAlloc" name="FindOrAlloc">
+    <brief> Find node by key or allocate a new node</brief>
+    <doc>If a node with the key is found it returns pointer to the node, otherwise
+it will find an empty node to return, if no empty node can be found it
+returns nullptr. If this method returns non-nullptr is_found indicates
+whether the node returned is found by key.
+
+</doc>
+    <return>
+      <doc>pointer to the found node or empty node or nullptr</doc>
+      <type name="volatile Node" qualifier="*" />
+    </return>
+    <argument id="shmc::ShmHashTable::FindOrAlloc::key" name="key">
+      <doc>key to find</doc>
+      <type name="const Key" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHashTable::FindOrAlloc::is_found" name="is_found">
+      <doc>[out] whether the node is found by key if non-nullptr returned</doc>
+      <type builtin="yes" name="bool" qualifier="*" />
+    </argument>
+  </method>
+  <methodtemplate id="shmc::ShmHashTable::Find" name="Find">
+    <brief> Find node by key (with custom argument) </brief>
+    <doc>This const method returns pointer to const node (read-only) if found.
+
+</doc>
+    <return>
+      <doc>pointer to node if found, otherwise nullptr</doc>
+      <type name="const volatile Node" qualifier=" const *" />
+    </return>
+    <argument id="shmc::ShmHashTable::Find::key" name="key">
+      <doc>key to find</doc>
+      <type name="const Key" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHashTable::Find::arg" name="arg">
+      <doc>argument to pass to Node::Key(Arg)</doc>
+      <type name="Arg &amp;&amp;" />
+    </argument>
+    <templatetypeparameter id="shmc::ShmHashTable::Find::Arg" name="Arg" />
+    <templatetypeparameter id="shmc::ShmHashTable::Find::Arg" name="Arg" />
+  </methodtemplate>
+  <methodtemplate id="shmc::ShmHashTable::Find" name="Find">
+    <brief> Find node by key (with custom argument) </brief>
+    <doc>This method returns pointer to non-const node if found and user can
+update the content of the node. Note that Read-Write concurrency safety
+should be considered.
+
+</doc>
+    <return>
+      <doc>pointer to node if found, otherwise nullptr</doc>
+      <type name="volatile Node" qualifier="*" />
+    </return>
+    <argument id="shmc::ShmHashTable::Find::key" name="key">
+      <doc>key to find</doc>
+      <type name="const Key" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHashTable::Find::arg" name="arg">
+      <doc>argument to pass to Node::Key(Arg)</doc>
+      <type name="Arg &amp;&amp;" />
+    </argument>
+    <templatetypeparameter id="shmc::ShmHashTable::Find::Arg" name="Arg" />
+    <templatetypeparameter id="shmc::ShmHashTable::Find::Arg" name="Arg" />
+  </methodtemplate>
+  <methodtemplate id="shmc::ShmHashTable::FindOrAlloc" name="FindOrAlloc">
+    <brief> Find node by key or allocate a new node (with custom argument) </brief>
+    <doc>If a node with the key is found it returns pointer to the node, otherwise
+it will find an empty node to return, if no empty node can be found it
+returns nullptr. If this method returns non-nullptr is_found indicates
+whether the node returned is found by key.
+
+</doc>
+    <return>
+      <doc>pointer to the found node or empty node or nullptr</doc>
+      <type name="volatile Node" qualifier="*" />
+    </return>
+    <argument id="shmc::ShmHashTable::FindOrAlloc::key" name="key">
+      <doc>key to find</doc>
+      <type name="const Key" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmHashTable::FindOrAlloc::arg" name="arg">
+      <doc>argument to pass to Node::Key(Arg)</doc>
+      <type name="Arg &amp;&amp;" />
+    </argument>
+    <argument id="shmc::ShmHashTable::FindOrAlloc::is_found" name="is_found">
+      <doc>[out] whether the node is found by key if non-nullptr returned</doc>
+      <type builtin="yes" name="bool" qualifier="*" />
+    </argument>
+    <templatetypeparameter id="shmc::ShmHashTable::FindOrAlloc::Arg" name="Arg" />
+    <templatetypeparameter id="shmc::ShmHashTable::FindOrAlloc::Arg" name="Arg" />
+  </methodtemplate>
+  <struct name="TravelPos" ref="shmc::ShmHashTable::TravelPos#shmc::ShmHashTable::TravelPos">
+    <brief> Cursor type recording current travelling position</brief>
+  </struct>
+  <method id="shmc::ShmHashTable::Travel" name="Travel">
+    <brief> Travel nodes</brief>
+    <doc>This method will scan array of nodes and find non-empty nodes and
+call the callback @f for each one. If @max_travel_nodes nodes have
+been travelled this method will stop and save the position to @pos.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashTable::Travel::pos" name="pos">
+      <doc>[in|out] current position of travel</doc>
+      <type name="ShmHashTable&lt;Key, Node, Alloc&gt;::TravelPos" qualifier="*" ref="shmc::ShmHashTable::TravelPos#shmc::ShmHashTable::TravelPos" />
+    </argument>
+    <argument id="shmc::ShmHashTable::Travel::max_travel_nodes" name="max_travel_nodes">
+      <doc>max nodes to travel in this method call, 0 for all</doc>
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::ShmHashTable::Travel::f" name="f">
+      <doc>callback to be called when visiting each node</doc>
+      <type name="std::function&lt;_Signature&gt;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashTable::Travel" name="Travel">
+    <brief> Travel all nodes</brief>
+    <doc>This method will scan array of nodes and find all non-empty nodes and
+call the callback @f for each one.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmHashTable::Travel::f" name="f">
+      <doc>callback to be called when visiting each node</doc>
+      <type name="std::function&lt;_Signature&gt;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmHashTable::ideal_capacity" name="ideal_capacity">
+    <brief> getter</brief>
+    <return>
+      <doc>ideal capacity of the hash-table</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method id="shmc::ShmHashTable::expected_capacity" name="expected_capacity">
+    <brief> getter</brief>
+    <doc>The expected actual capacity is about 90% of ideal.
+
+</doc>
+    <return>
+      <doc>expected capacity of the hash-table</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+</classtemplate>

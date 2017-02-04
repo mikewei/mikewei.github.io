@@ -1,0 +1,306 @@
+<?xml version='1.0' encoding='utf-8'?>
+<classtemplate abstract="true" id="shmc::ShmSyncBuf" name="ShmSyncBuf" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief> A one-writer-multi-reader broadcast queue useful for replica data sync</brief>
+  <doc>ShmSyncBuf is implemented as a circular queue of fixed size. One writer is
+assumed to push new data to the tail of the queue and internally recycle
+free space by removing oldest data of the queue when needed. Multi-readers
+can read concurrently from the queue and each can get a copy of the data
+flow. Note that reader must be fast enough to keep pace with the writer,
+otherwise the reader will fall behind the writer, and when the difference
+overflows the queue size reader begins to lose data.
+
+Read-Write concurrency safety is offered internally in a lock-free manner,
+but Write-Write is not and needs external synchronization.
+</doc>
+  <templatetypeparameter id="shmc::ShmSyncBuf::Alloc" name="Alloc">
+    <brief>shm allocator to use [SVIPC(default), SVIPC_HugeTLB, POSIX, ANON, HEAP]</brief>
+    <default>
+      <type name="shmc::SVIPC" />
+    </default>
+  </templatetypeparameter>
+  <constructor abstract="yes" id="shmc::ShmSyncBuf::ShmSyncBuf&lt;Alloc&gt;" name="ShmSyncBuf&lt;Alloc&gt;" />
+  <method id="shmc::ShmSyncBuf::InitForWrite" name="InitForWrite">
+    <brief> Initializer for READ &amp; WRITE</brief>
+    <doc>This initializer should be called by the container writer/owner and
+it will try to attach an existing shm or created a new one if needed.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::InitForWrite::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach or create</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::InitForWrite::buf_size_bytes" name="buf_size_bytes">
+      <doc>size of the sync buffer</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::InitForRead" name="InitForRead">
+    <brief> Initializer for READ-ONLY</brief>
+    <doc>This initializer should be called by the container reader and
+it will try to attach an existing shm with read-only mode.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::InitForRead::shm_key" name="shm_key">
+      <doc>key or name of the shm to attach</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::Push" name="Push">
+    <brief> Push data to the sync buffer</brief>
+    <doc>Push data of buffer with user specified timestamp to the queue.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::Push::buf" name="buf">
+      <doc>pointer to the data to be pushed</doc>
+      <type builtin="yes" name="void" qualifier=" const *" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::Push::len" name="len">
+      <doc>size of @buf</doc>
+      <type name="size_t" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::Push::ts" name="ts">
+      <doc>timestamp of data</doc>
+      <type name="timeval" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::Push" name="Push">
+    <brief> Push data to the sync buffer</brief>
+    <doc>Push data of buffer to the queue. The timestamp of data is automatically
+set using time(2) with precision of second. This is a tradeoff as getting
+higher precision timestamp is much slower. User can also specify the
+timestamp explicitly using another overloaded version of this method.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::Push::buf" name="buf">
+      <doc>pointer to the data to be pushed</doc>
+      <type builtin="yes" name="void" qualifier=" const *" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::Push::len" name="len">
+      <doc>size of @buf</doc>
+      <type name="size_t" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::Push" name="Push">
+    <brief> Push data to the sync buffer</brief>
+    <doc>Push data of string with user specified timestamp to the queue.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::Push::data" name="data">
+      <doc>data to be pushed</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::Push::ts" name="ts">
+      <doc>timestamp of data</doc>
+      <type name="timeval" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::Push" name="Push">
+    <brief> Push data to the sync buffer</brief>
+    <doc>Push data of buffer to the queue. The timestamp of data is automatically
+set using time(2) with precision of second. This is a tradeoff as getting
+higher precision timestamp is much slower. User can also specify the
+timestamp explicitly using another overloaded version of this method.
+
+</doc>
+    <return>
+      <doc>true if succeed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::Push::data" name="data">
+      <doc>data to be pushed</doc>
+      <type name="std::string" qualifier=" const &amp;" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::Head" name="Head">
+    <brief> Get the queue head iterator</brief>
+    <doc>Note that the head iterator may be same as the tail iterator if the
+queue is empty.
+
+</doc>
+    <return>
+      <doc>iterator of queue head</doc>
+      <type name="SyncIter" ref="shmc::SyncIter#shmc::SyncIter" />
+    </return>
+  </method>
+  <method id="shmc::ShmSyncBuf::Tail" name="Tail">
+    <brief> Get the queue tail iterator</brief>
+    <doc>Note that the tail iterator is the next position to write, so it does
+not point to a valid data node until a new data node is pushed in.
+
+</doc>
+    <return>
+      <doc>iterator of queue tail</doc>
+      <type name="SyncIter" ref="shmc::SyncIter#shmc::SyncIter" />
+    </return>
+  </method>
+  <method id="shmc::ShmSyncBuf::Next" name="Next">
+    <brief> Move the iterator to the next data position</brief>
+    <doc>This method will check the integrity of current data node and update it
+to point to the next data node.
+
+</doc>
+    <return>
+      <doc>true if suceed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::Next::it" name="it">
+      <doc>the iterator to move</doc>
+      <type name="SyncIter" qualifier="*" ref="shmc::SyncIter#shmc::SyncIter" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::FindBySeq" name="FindBySeq">
+    <brief> Find data node by sequence</brief>
+    <doc>This method is very efficient with time complexity of O(1) due to an
+internal index of sequence.
+
+</doc>
+    <return>
+      <doc>true if suceed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::FindBySeq::seq" name="seq">
+      <doc>sequence to find</doc>
+      <type name="uint64_t" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::FindBySeq::it" name="it">
+      <doc>[out] iterator of found data node</doc>
+      <type name="SyncIter" qualifier="*" ref="shmc::SyncIter#shmc::SyncIter" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::FindByTime" name="FindByTime">
+    <brief> Find data node by timestamp</brief>
+    <doc>This method is efficient with time complexity of O(log(N)) due to the
+binary search algorithm used.
+
+</doc>
+    <return>
+      <doc>true if suceed</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::FindByTime::ts" name="ts">
+      <doc>timestamp to find</doc>
+      <type name="timeval" qualifier=" const &amp;" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::FindByTime::it" name="it">
+      <doc>[out] iterator of found data node</doc>
+      <type name="SyncIter" qualifier="*" ref="shmc::SyncIter#shmc::SyncIter" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::Read" name="Read">
+    <brief> Read data node pointed by the iterator</brief>
+    <doc>This method will fill @meta and copy node data to @buf. The actual copy
+length is MIN(node-data-size, user-buf-size), that means if
+node-data-size &lt; user-buf-size all node data will be copied to the user
+buf and if node-data-size &gt; user-buf-size data will be truncated to fill
+user-buf fully. In any case the real size of node data will be returned
+through the out param @size.
+
+</doc>
+    <return>
+      <doc>1 if read successfully,
+          0 if iterator is at tail of the queue and no data to read now,
+         -1 if error found</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::Read::it" name="it">
+      <doc>iterator to read</doc>
+      <type name="SyncIter" qualifier=" const &amp;" ref="shmc::SyncIter#shmc::SyncIter" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::Read::meta" name="meta">
+      <doc>[out] meta data of the node</doc>
+      <type name="SyncMeta" qualifier="*" ref="shmc::SyncMeta#shmc::SyncMeta" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::Read::buf" name="buf">
+      <doc>[out] user buf to copy node data to</doc>
+      <type builtin="yes" name="void" qualifier="*" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::Read::len" name="len">
+      <type name="size_t" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::Read" name="Read">
+    <brief> Read data node pointed by the iterator</brief>
+    <doc>This method will fill @meta and copy all node data to the string @out.
+
+</doc>
+    <return>
+      <doc>1 if read successfully,
+          0 if iterator is at tail of the queue and no data to read now,
+         -1 if error found</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::Read::it" name="it">
+      <doc>iterator to read</doc>
+      <type name="SyncIter" qualifier=" const &amp;" ref="shmc::SyncIter#shmc::SyncIter" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::Read::meta" name="meta">
+      <doc>[out] meta data of the node</doc>
+      <type name="SyncMeta" qualifier="*" ref="shmc::SyncMeta#shmc::SyncMeta" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::Read::out" name="out">
+      <doc>[out] output string to copy node data to</doc>
+      <type name="std::string" qualifier="*" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::Read" name="Read">
+    <brief> Read data node pointed by the iterator</brief>
+    <doc>This method will only read meta data of current node and fill @meta.
+
+</doc>
+    <return>
+      <doc>1 if read successfully,
+          0 if iterator is at tail of the queue and no data to read now,
+         -1 if error found</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="shmc::ShmSyncBuf::Read::it" name="it">
+      <doc>iterator to read</doc>
+      <type name="SyncIter" qualifier=" const &amp;" ref="shmc::SyncIter#shmc::SyncIter" />
+    </argument>
+    <argument id="shmc::ShmSyncBuf::Read::meta" name="meta">
+      <doc>[out] meta data of the node</doc>
+      <type name="SyncMeta" qualifier="*" ref="shmc::SyncMeta#shmc::SyncMeta" />
+    </argument>
+  </method>
+  <method id="shmc::ShmSyncBuf::sync_buf_size" name="sync_buf_size">
+    <brief> getter</brief>
+    <return>
+      <doc>total size of the sync buffer</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method id="shmc::ShmSyncBuf::used_size" name="used_size">
+    <brief> getter</brief>
+    <return>
+      <doc>used size of the sync buffer</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+  <method id="shmc::ShmSyncBuf::free_size" name="free_size">
+    <brief> getter</brief>
+    <return>
+      <doc>free size of the sync buffer</doc>
+      <type name="size_t" />
+    </return>
+  </method>
+</classtemplate>

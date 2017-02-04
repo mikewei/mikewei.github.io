@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<structtemplate id="shmc::impl::AllocTraits" name="AllocTraits" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>this defines default traits, subclasses can override it by partial-spec</brief>
+  <templatetypeparameter id="shmc::impl::AllocTraits::Alloc" name="Alloc" />
+  <variable id="shmc::impl::AllocTraits::is_named" name="is_named">
+    <brief>named allocator can be found by InitForRead</brief>
+    <type builtin="yes" name="bool" qualifier=" const" />
+  </variable>
+</structtemplate>
